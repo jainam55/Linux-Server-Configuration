@@ -57,5 +57,7 @@ This is tutorial for a baseline installation of a Linux distribution on a virtua
 9. Run `sudo ufw status` which would allow you to see ports 2200, 80 ans 123 to be active.
 10. **Make sure under the Network tab on Lightsail Console the firewall setting has all three ports listed and not the port 22**.
 
-
-5. 
+## Step 7 : Configure the local timezone to UTC:
+1. Run `date` and see if the local timezone is not set to UTC.
+2.If its other than UTC run, `sudo dpkg-reconfigure tzdata` and follow along and select UTC. 
+[Source to Change Timezone](https://askubuntu.com/questions/323131/setting-timezone-from-terminal "Change timezone").
