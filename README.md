@@ -61,3 +61,8 @@ This is tutorial for a baseline installation of a Linux distribution on a virtua
 1. Run `date` and see if the local timezone is not set to UTC.
 2.If its other than UTC run, `sudo dpkg-reconfigure tzdata` and follow along and select UTC. 
 [Source to Change Timezone](https://askubuntu.com/questions/323131/setting-timezone-from-terminal "Change timezone").
+
+## Step 8 : Installing Apache and mod_wsgi(Web Server Gateway Interface):
+1.  Run to install `sudo apt-get install apache2`.
+2. Run `sudo apt-get install libapache2-mod-wsgi` to install application handler- mod_wsgi.
+3. Run `sudo a2enmod wsgi ` to enable wsgi if not enabled.
