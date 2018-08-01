@@ -66,3 +66,47 @@ This is tutorial for a baseline installation of a Linux distribution on a virtua
 1.  Run to install `sudo apt-get install apache2`.
 2. Run `sudo apt-get install libapache2-mod-wsgi` to install application handler- mod_wsgi.
 3. Run `sudo a2enmod wsgi ` to enable wsgi if not enabled.
+
+## Step 9 : Setup and Install PostgreSQL:
+1. Run `sudo apt-get install postgresql` to install PostgreSQL.
+2. Run `psql --version` to check which version of PostgreSQL is installed.
+3. Make sure remote connections aren't allow by `sudo vim /etc/postgresql/{your current version(9.5)}/main/pg_hba.conf`.
+4. Run `sudo su - postgres` to switch to postgres after entering grader password.
+5. Run `psql` to log into psql terminal and the shell will appear as `postgres=# `.
+6.Alternatively running `sudo -u postgres psql` can put you through postgresql shell without switching accounts.
+7.Now run `CREATE USER catalog with PASSWORD 'catalog';` which creates a user named catalog in postgres after you log in with `psql`.
+8. Run `ALTER USER catalog CREATEDB;` which will give user catalog the ability to create a Database to the user.
+9. Run `CREATE DATABASE catalog WITH OWNER catalog;` which will create a database named same as catalog and give all the rights to the user catalog.
+10.Run `\c catalog` to connect to the newly created database `catalog`.
+11.We can now connect to the database and lock down the permissions to only let  user "catalog" create tables.
+12. Run:
+    ```
+    REVOKE ALL ON SCHEMA public from public;
+    GRANT ALL ON SCHEMA public TO catalog;
+    ```
+13. Quit postgres `\q`.
+
+SOURCE:[Digitalocean.com](https://www.digitalocean.com/community/tutorials/how-to-secure-postgresql-on-an-ubuntu-vps)
+&
+[Learn more about PostgreSql privileges and User Management](https://severalnines.com/blog/postgresql-privileges-user-management-what-you-should-know).
+
+## Step 10 : Setup project from GitHub repository.:
+1. Get of out of the postgresql shell by `control+d` and make sure you are in terminal as grader user.
+2. Run `sudo apt-get install git` to install git in your virtual machine.
+3. Run `cd /var/www/` to get into /var/www/ which is just the default root folder of the web server.
+4. Inside it make a directory with `sudo mkdir catalog`.
+5. cd into the catalog directory and clone your github repo of the Item-Catalog app with 
+    ```
+    sudo git clone https://github.com/jainam55/Item-Catalog.git
+    ```
+    **Make sure you run it as root user**
+6. Make sure the project got cloned correctly by typing `\ls` command.
+7. Run `sudo mv ./Item-Catalog ./catalog` which will rename our git cloned project as catalog.
+8. Navigate through the inner directory `cd catalog`. The heirarchy should look like `/var/www/catalog/catalog`.
+9. Rename your application logic file (project.py) to __init__.py `sudo mv ./project.py ./__init__.py`.
+10.We are no longer using sqlite as database in our project and hence using postgresql so we need some changes in to our project files.We need to make changes in __init__.py and database_setup.py :
+     * Find the lines `engine = create_engine('sqlite:///ItemCatalog.db')` in database_setup.py and change it over to `engine = create_engine('postgresql://catalog:password@localhost/catalog')`  by running the command `sudo nano database_setup.py`.
+     * Find the lines `engine = create_engine('sqlite:///ItemCatalog.db',
+                       connect_args={'check_same_thread': False})` in __init__.py and edit it as `engine = create_engine('postgresql://catalog:password@localhost/catalog',
+                       connect_args={'check_same_thread': False})` by running the command `sudo nano __init__.py`.
+ 
