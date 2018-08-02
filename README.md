@@ -1,6 +1,10 @@
 # Linux-Server-Configuration
 This is tutorial for a baseline installation of a Linux distribution on a virtual machine and prepare it to host your web applications, to include installing updates, securing it from a number of attack vectors and installing/configuring web and database servers.
 
+IP : 18.220.39.244
+Domain Pointer Name : http://ec2-18-220-39-244.us-east-2.compute.amazonaws.com
+"You can get this by command `host 18.220.39.244`".
+
 ## Step 1: SSH into the AWS Lightsail Server Instance:-
 1. Download the private key and rename as udacity_key.rsa .
 2. In terminal,run  `open .ssh` which opens the local machine's Secure Shell directory and copy and paste the udacity_key.rsa from downloads folder OR `cp ~/Downloads/ubuntu.rsa ~/.ssh/` ( Source www.computerhope.com).
@@ -172,6 +176,33 @@ SOURCE:[Digitalocean.com](https://www.digitalocean.com/community/tutorials/how-t
 5. `sudo service apache2 restart`.
 
 
-     
+## Step 14: Setup google login: 
+1. Go to google developer console and in the credentials under the OAuth 2.0 client IDs change:
+    * Authorized JavaScript origins to http://18.220.39.244 & http://ec2-18-220-39-244.us-east-2.compute.amazonaws.com.
+    * Add to Authorized redirect URIs following :
+    
+        1.http://ec2-18-220-39-244.us-east-2.compute.amazonaws.com/oauth2callback
+        2.http://ec2-18-220-39-244.us-east-2.compute.amazonaws.com/login
+        3.http://ec2-18-220-39-244.us-east-2.compute.amazonaws.com/gconnect
+   * Save and download the correspoding JSON file to your local machine, open it in any editor and copy the content.
+   
+ 2. Navigate through the grader user with following command `cd /var/www/FlaskApp/FlaskApp/templates`.
+ 3. Run `sudo nano client_secrets.json` and `control+K` to cut current content and paste the new content and save and exit the file.
+
+4. Run `sudo nano __init__.py` to edit the server file and navigate through line number 147 and edit the path of line `oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')`
+to 
+`oauth_flow = flow_from_clientsecrets('/var/www/FlaskApp/FlaskApp/client_secrets.json', scope='')`
+
+5. Restart `sudo service apache2 restart`.
+
+
+
+Resources to complete this project :
+1. FSND forum
+2. www.stackoverflow.com
+3. Largely  [DigitalOcean How to deploy flask app on ubuntu vps](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps)
+4. Askubuntu.com threads
+5. [RealPython](https://realpython.com/flask-by-example-part-2-postgres-sqlalchemy-and-alembic/)
+6.
  
  
