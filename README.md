@@ -3,9 +3,9 @@ This is tutorial for a baseline installation of a Linux distribution on a virtua
 
 ## Step 1: SSH into the AWS Lightsail Server Instance:-
 1. Download the private key and rename as udacity_key.rsa .
-2. In terminal,run  `open .ssh` which opens the local machine's Secure Shell directory and copy and paste the udacity_key.rsa from downloads folder OR `cp ~/Downloads/configkey.rsa ~/.ssh/` ( Source www.computerhope.com).
+2. In terminal,run  `open .ssh` which opens the local machine's Secure Shell directory and copy and paste the udacity_key.rsa from downloads folder OR `cp ~/Downloads/ubuntu.rsa ~/.ssh/` ( Source www.computerhope.com).
 
-3. Open the terminal and execute     `ssh -i ~/.ssh/configkey.rsa ubuntu@18.216.108.86`. Where udacity_key.rsa is the private key(not posted) and `18.216.108.86` is the public IP address.
+3. Open the terminal and execute `chmod 600 ~/.ssh/ubuntu.rsa` which sets permissions for the key and then `ssh -i ~/.ssh/ubuntu.rsa ubuntu@18.220.39.244`. Where ubuntu.rsa is the private key(not posted) and `18.220.39.244` is the public IP address.
       * Step 3 will verify private key which is stored already in the local machine and provide access to THIS user to the server.
 4. To log into the server as `root` user, execute `sudo cp /home/ubuntu/.ssh/authorized_keys /root/.ssh/`.
 5. Either way `ubuntu` user or `root` user is fine.
@@ -26,7 +26,7 @@ This is tutorial for a baseline installation of a Linux distribution on a virtua
 1. Run `ssh-keygen` on the local machine and save it in the `~/.ssh/accesskey` directory and `accesskey.pub` will be generated.
 2. Press return key twice so that theres default paraphrase (optionally for more security you can add paraphrase).
 3. `cat ~/.ssh/accesskey.pub` will print out the key. Copy the key.
-4. Run `ssh -i ~/.ssh/udacity_key.rsa root@18.216.108.86` and SSH into the server.
+4. Run `ssh -i ~/.ssh/ubuntu.rsa root@18.220.39.244` and SSH into the server.
 5. `su - grader` will take you to the user grader on terminal.
 6. Create a directory with command `mkdir .ssh`
 7. Use touch command (to create empty new files), `touch .ssh/authorized_keys`.
@@ -34,7 +34,7 @@ This is tutorial for a baseline installation of a Linux distribution on a virtua
 9. Run `chmod 700 .ssh` which will give priveleges that a user/owner can read, write and execute the file.
 10. Run `chmod 644 .ssh/authorized_keys` which will also give priveleges to the file inside.
 11. Run `sudo service ssh restart`.
-12. `ssh -i ~/.ssh/linuxkey grader@18.216.108.86` will take you to the login as grader user with newly created authentication.
+12. ` ssh -i ~/.ssh/accesskey grader@18.220.39.244` will take you to the login as grader user with newly created authentication.
 
 ## Step 5: Forcing key based Authentication and Changing the port :-
 1. Run `sudo nano /etc/ssh/sshd_config` and change `PasswordAuthentication` to 'no' if yes and `PermitRootLogin no`.
@@ -42,7 +42,7 @@ This is tutorial for a baseline installation of a Linux distribution on a virtua
 2. Change the port from `22` to `2200`.
 3. Run `sudo service ssh restart`.
 4. Go to Lightsail homepage and select Network tab and under it, in the Firewall setting, add 2200 port as tcp.
-5. `ssh -i ~/.ssh/udacity_key.rsa -p 2200 ubuntu@18.216.108.86` or `ssh -i ~/.ssh/accesskey -p 2200 grader@18.216.108.86`
+5. `ssh -i ~/.ssh/ubuntu.rsa -p 2200 ubuntu@18.220.39.244` or `ssh -i ~/.ssh/accesskey -p 2200 grader@18.216.108.86`
 
 ## Step 6 : Configure Ports in UFW() :-
 1. `sudo ufw status` The default Status will be inactive.
@@ -94,19 +94,84 @@ SOURCE:[Digitalocean.com](https://www.digitalocean.com/community/tutorials/how-t
 1. Get of out of the postgresql shell by `control+d` and make sure you are in terminal as grader user.
 2. Run `sudo apt-get install git` to install git in your virtual machine.
 3. Run `cd /var/www/` to get into /var/www/ which is just the default root folder of the web server.
-4. Inside it make a directory with `sudo mkdir catalog`.
+4. Inside it make a directory with `sudo mkdir FlaskApp`.
 5. cd into the catalog directory and clone your github repo of the Item-Catalog app with 
     ```
     sudo git clone https://github.com/jainam55/Item-Catalog.git
     ```
     **Make sure you run it as root user**
 6. Make sure the project got cloned correctly by typing `\ls` command.
-7. Run `sudo mv ./Item-Catalog ./catalog` which will rename our git cloned project as catalog.
-8. Navigate through the inner directory `cd catalog`. The heirarchy should look like `/var/www/catalog/catalog`.
+7. Run `sudo mv ./Item-Catalog ./FlaskApp` which will rename our git cloned project as catalog.
+8. Navigate through the inner directory `cd FlaskApp`. The heirarchy should look like `/var/www/FlaskApp/FlaskApp`.
 9. Rename your application logic file (project.py) to __init__.py `sudo mv ./project.py ./__init__.py`.
 10.We are no longer using sqlite as database in our project and hence using postgresql so we need some changes in to our project files.We need to make changes in __init__.py and database_setup.py :
      * Find the lines `engine = create_engine('sqlite:///ItemCatalog.db')` in database_setup.py and change it over to `engine = create_engine('postgresql://catalog:password@localhost/catalog')`  by running the command `sudo nano database_setup.py`.
      * Find the lines `engine = create_engine('sqlite:///ItemCatalog.db',
                        connect_args={'check_same_thread': False})` in __init__.py and edit it as `engine = create_engine('postgresql://catalog:password@localhost/catalog',
                        connect_args={'check_same_thread': False})` by running the command `sudo nano __init__.py`.
+     * Change path for client secrets `CLIENT_ID = json.loads(
+    open('client_secrets.json', 'r').read())['web']['client_id']` to `CLIENT_ID = json.loads(
+    open('/var/www/FlaskApp/FlaskApp/client_secrets.json', 'r').read())['web']['client_id']`.
+    
+## Step 11 : Install Flask, Virtual Env and Python-pip:
+1. Run ` sudo apt-get install python-pip` and enter the password for grader.
+2. Run `sudo pip install virtualenv` to install the virtualenv.
+3. Navigate through `cd /var/www/FlaskApp/FlaskApp` and run `sudo virtualenv venv`.
+4. Run `source venv/bin/activate` to activate virtual environment.
+5. `sudo chmod -R 777 venv` to set permissions for virtual enivironment.
+6. Install dependencies :
+    ```
+     sudo pip install Flask
+     sudo pip install httplib2 oauth2client sqlalchemy psycopg2 sqlalchemy_utils
+     sudo pip install requests
+    ```
+7. Try to run `sudo python __init__.py` to see it runs and if needs any more dependencies.If it runs successfully the flask app will run as server.
+
+
+## Step 12 :Configure and Enable a New Virtual Host :
+1. Run the command `sudo nano /etc/apache2/sites-available/FlaskApp.conf`.
+2. edit the FlaskApp.conf file with 
+    ```
+    <VirtualHost *:80>
+                ServerName 18.220.39.244
+                ServerAlias ec2-18-220-39-244.us-east-2.compute.amazonaws.com
+                ServerAdmin jainam55@gmail.com
+                WSGIScriptAlias / /var/www/FlaskApp/flaskapp.wsgi
+                <Directory /var/www/FlaskApp/FlaskApp/>
+                        Order allow,deny
+                        Allow from all
+                </Directory>
+                Alias /static /var/www/FlaskApp/FlaskApp/static
+                <Directory /var/www/FlaskApp/FlaskApp/static/>
+                        Order allow,deny
+                        Allow from all
+                </Directory>
+                ErrorLog ${APACHE_LOG_DIR}/error.log
+                LogLevel warn
+                CustomLog ${APACHE_LOG_DIR}/access.log combined
+     </VirtualHost>
+    ```
+3. `sudo service apache2 reload` will reload the new changes.
+4.Enable the virtual host with the following command: `sudo a2ensite FlaskApp`
+
+## Step 13: Create the .wsgi File :
+1. Navigate to the upper FlaskApp directory so the tree looks: `/var/www/FlaskApp`.
+2. Run `sudo touch flaskapp.wsgi`.
+3. Run `sudo nano flaskapp.wsgi` and edit the newly created file with:
+     ```
+     #!/usr/bin/python
+     import sys
+     import logging
+     logging.basicConfig(stream=sys.stderr)
+     sys.path.insert(0,"/var/www/FlaskApp/")
+
+     from FlaskApp import app as application
+     application.secret_key = 'Add your secret key'
+     ```
+4. Save and exit the file.
+5. `sudo service apache2 restart`.
+
+
+     
+ 
  
