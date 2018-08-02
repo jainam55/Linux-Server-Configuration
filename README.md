@@ -23,7 +23,8 @@ Domain Pointer Name : http://ec2-18-220-39-244.us-east-2.compute.amazonaws.com
     3. Run `sudo visudo` and edit it by typing grader `grader  ALL=(ALL:ALL) ALL` below `root  ALL=(ALL:ALL) ALL` and save the file.
 
 ## Step 3: Updating Available package list:
-1.`sudo apt-get update`
+1.`sudo apt-get update`.
+
 2. `sudo apt-get upgrade`
 
 ## Step 4 : Generating key value pairs (Public key Encryption) :-
@@ -187,6 +188,7 @@ SOURCE:[Digitalocean.com](https://www.digitalocean.com/community/tutorials/how-t
    * Save and download the correspoding JSON file to your local machine, open it in any editor and copy the content.
    
  2. Navigate through the grader user with following command `cd /var/www/FlaskApp/FlaskApp/templates`.
+ 
  3. Run `sudo nano client_secrets.json` and `control+K` to cut current content and paste the new content and save and exit the file.
 
 4. Run `sudo nano __init__.py` to edit the server file and navigate through line number 147 and edit the path of line `oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')`
@@ -203,6 +205,5 @@ Resources to complete this project :
 3. Largely  [DigitalOcean How to deploy flask app on ubuntu vps](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps)
 4. Askubuntu.com threads
 5. [RealPython](https://realpython.com/flask-by-example-part-2-postgres-sqlalchemy-and-alembic/)
-6.
  
  
