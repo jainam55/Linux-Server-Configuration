@@ -4,7 +4,7 @@ This is tutorial for a baseline installation of a Linux distribution on a virtua
 IP : 18.220.39.244
 Domain Pointer Name : http://ec2-18-220-39-244.us-east-2.compute.amazonaws.com
 "You can get this by command `host 18.220.39.244`".
-
+Port: 2200
 ## Step 1: SSH into the AWS Lightsail Server Instance:-
 1. Download the private key and rename as udacity_key.rsa .
 2. In terminal,run  `open .ssh` which opens the local machine's Secure Shell directory and copy and paste the udacity_key.rsa from downloads folder OR `cp ~/Downloads/ubuntu.rsa ~/.ssh/` ( Source www.computerhope.com).
