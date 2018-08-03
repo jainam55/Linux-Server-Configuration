@@ -185,7 +185,9 @@ SOURCE:[Digitalocean.com](https://www.digitalocean.com/community/tutorials/how-t
     * Add to Authorized redirect URIs following :
     
         1.http://ec2-18-220-39-244.us-east-2.compute.amazonaws.com/oauth2callback
+        
         2.http://ec2-18-220-39-244.us-east-2.compute.amazonaws.com/login
+        
         3.http://ec2-18-220-39-244.us-east-2.compute.amazonaws.com/gconnect
    * Save and download the correspoding JSON file to your local machine, open it in any editor and copy the content.
    
